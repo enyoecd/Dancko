@@ -648,7 +648,25 @@
 .elementor-15
   .elementor-element.elementor-element-6e2cd49
   .wpcf7-not-valid-tip {
-  color: #ffd1d1;
+  color: #ff5c5c;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 700;
+  line-height: 1.35;
+  margin-top: 4px;
+}
+.elementor-15
+  .elementor-element.elementor-element-6e2cd49
+  .wpcf7-form input.wpcf7-not-valid,
+.elementor-15
+  .elementor-element.elementor-element-6e2cd49
+  .wpcf7-form textarea.wpcf7-not-valid,
+.elementor-15
+  .elementor-element.elementor-element-6e2cd49
+  .wpcf7-form input.wpcf7-not-valid:focus,
+.elementor-15
+  .elementor-element.elementor-element-6e2cd49
+  .wpcf7-form textarea.wpcf7-not-valid:focus {
+  border: 2px solid #ff5c5c;
+  box-shadow: 0 0 0 2px rgba(255, 92, 92, 0.28);
+  outline: none;
 }
