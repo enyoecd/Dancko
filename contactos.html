@@ -248,14 +248,14 @@ var stylepress_email = {"ajax_url":"https:\/\/danckoproducciones.cl\/wp-admin\/a
 </div>
 <p><label> Tu nombre (requerido)<br>
     <span class="wpcf7-form-control-wrap your-name"><input type="text" name="your-name" value="" size="40" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" aria-required="true" aria-invalid="false"></span> </label></p>
-<p><label> Tu correo electr&oacute;nico (requerido)<br>
-    <span class="wpcf7-form-control-wrap your-email"><input type="email" name="your-email" value="" size="40" class="wpcf7-form-control wpcf7-text wpcf7-email wpcf7-validates-as-required wpcf7-validates-as-email" aria-required="true" aria-invalid="false"></span> </label></p>
-<p><label> Tu Telefono (requerido)<br>
-    <span class="wpcf7-form-control-wrap tel-628"><input type="tel" name="tel-628" value="+56" size="40" class="wpcf7-form-control wpcf7-text wpcf7-tel wpcf7-validates-as-required wpcf7-validates-as-tel" aria-required="true" aria-invalid="false"></span> </label></p>
+<p><label> Correo electr&oacute;nico<br>
+    <span class="wpcf7-form-control-wrap your-email"><input type="email" name="your-email" value="" size="40" class="wpcf7-form-control wpcf7-text wpcf7-email wpcf7-validates-as-email" aria-invalid="false"></span> </label></p>
+<p><label> Tel&eacute;fono<br>
+    <span class="wpcf7-form-control-wrap tel-628"><input type="tel" name="tel-628" value="+56" size="40" class="wpcf7-form-control wpcf7-text wpcf7-tel wpcf7-validates-as-tel" aria-invalid="false"></span> </label></p>
 <p><label> Asunto<br>
-    <span class="wpcf7-form-control-wrap your-subject"><input type="text" name="your-subject" value="" size="40" class="wpcf7-form-control wpcf7-text" aria-invalid="false"></span> </label></p>
+    <span class="wpcf7-form-control-wrap your-subject"><input type="text" name="your-subject" value="" size="40" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" aria-required="true" aria-invalid="false"></span> </label></p>
 <p><label> Tu mensaje<br>
-    <span class="wpcf7-form-control-wrap your-message"><textarea name="your-message" cols="40" rows="6" class="wpcf7-form-control wpcf7-textarea" aria-invalid="false"></textarea></span> </label></p>
+    <span class="wpcf7-form-control-wrap your-message"><textarea name="your-message" cols="40" rows="6" class="wpcf7-form-control wpcf7-textarea wpcf7-validates-as-required" aria-required="true" aria-invalid="false"></textarea></span> </label></p>
 <p><input type="submit" value="Enviar" class="wpcf7-form-control wpcf7-submit"></p>
 <div class="wpcf7-response-output wpcf7-display-none"></div></form></div></div>		</div>
 				</div>
@@ -362,6 +362,154 @@ var wpcf7 = {"apiSettings":{"root":"https:\/\/danckoproducciones.cl\/wp-json\/co
 /* ]]> */
 </script>
 <script type="text/javascript" src="./js/scripts.js" id="contact-form-7-js"></script>
+<script type="text/javascript" id="contactos-conditional-validation">
+( function() {
+	'use strict';
+
+	var form = document.querySelector( '.wpcf7-form' );
+	if ( ! form ) {
+		return;
+	}
+
+	var nameField = form.querySelector( '[name="your-name"]' );
+	var emailField = form.querySelector( '[name="your-email"]' );
+	var phoneField = form.querySelector( '[name="tel-628"]' );
+	var subjectField = form.querySelector( '[name="your-subject"]' );
+	var messageField = form.querySelector( '[name="your-message"]' );
+	var responseOutput = form.querySelector( '.wpcf7-response-output' );
+
+	var cleanPhone = function( value ) {
+		return value.replace( /[\s().-]/g, '' );
+	};
+
+	var hasEmail = function() {
+		return '' !== emailField.value.trim();
+	};
+
+	var hasPhone = function() {
+		var value = cleanPhone( phoneField.value.trim() );
+		return '' !== value && '+56' !== value && '56' !== value;
+	};
+
+	var clearField = function( field ) {
+		var wrap = field.closest( '.wpcf7-form-control-wrap' );
+		field.classList.remove( 'wpcf7-not-valid' );
+		field.setAttribute( 'aria-invalid', 'false' );
+		if ( wrap ) {
+			var tip = wrap.querySelector( '.wpcf7-not-valid-tip' );
+			if ( tip ) {
+				tip.parentNode.removeChild( tip );
+			}
+		}
+	};
+
+	var markInvalid = function( field, message ) {
+		var wrap = field.closest( '.wpcf7-form-control-wrap' );
+		field.classList.add( 'wpcf7-not-valid' );
+		field.setAttribute( 'aria-invalid', 'true' );
+		if ( ! wrap ) {
+			return;
+		}
+		var tip = wrap.querySelector( '.wpcf7-not-valid-tip' );
+		if ( ! tip ) {
+			tip = document.createElement( 'span' );
+			tip.className = 'wpcf7-not-valid-tip';
+			tip.setAttribute( 'role', 'alert' );
+			wrap.appendChild( tip );
+		}
+		tip.textContent = message;
+	};
+
+	var clearResponse = function() {
+		if ( responseOutput ) {
+			responseOutput.textContent = '';
+			responseOutput.style.display = 'none';
+			responseOutput.classList.add( 'wpcf7-display-none' );
+			responseOutput.classList.remove( 'wpcf7-validation-errors', 'wpcf7-mail-sent-ok', 'wpcf7-mail-sent-ng', 'wpcf7-aborted', 'wpcf7-acceptance-missing', 'wpcf7-spam-blocked' );
+			responseOutput.removeAttribute( 'role' );
+		}
+	};
+
+	var showResponse = function() {
+		if ( ! responseOutput ) {
+			return;
+		}
+		responseOutput.textContent = 'Uno o más campos tienen un error. Por favor, revísalos e inténtalo de nuevo.';
+		responseOutput.classList.remove( 'wpcf7-display-none' );
+		responseOutput.classList.add( 'wpcf7-validation-errors' );
+		responseOutput.setAttribute( 'role', 'alert' );
+		responseOutput.style.display = 'block';
+	};
+
+	var validate = function() {
+		[ nameField, emailField, phoneField, subjectField, messageField ].forEach( clearField );
+		clearResponse();
+
+		var firstInvalid = null;
+		var invalid = function( field, message ) {
+			markInvalid( field, message );
+			if ( ! firstInvalid ) {
+				firstInvalid = field;
+			}
+		};
+
+		if ( '' === nameField.value.trim() ) {
+			invalid( nameField, 'El campo es obligatorio.' );
+		}
+
+		if ( ! hasEmail() && ! hasPhone() ) {
+			var contactMessage = 'Ingresa tu correo electrónico o tu teléfono.';
+			invalid( emailField, contactMessage );
+			invalid( phoneField, contactMessage );
+		}
+
+		if ( '' === subjectField.value.trim() ) {
+			invalid( subjectField, 'El campo es obligatorio.' );
+		}
+
+		if ( '' === messageField.value.trim() ) {
+			invalid( messageField, 'El campo es obligatorio.' );
+		}
+
+		if ( firstInvalid ) {
+			showResponse();
+			firstInvalid.focus();
+			return false;
+		}
+
+		return true;
+	};
+
+	document.addEventListener( 'submit', function( event ) {
+		if ( event.target !== form ) {
+			return;
+		}
+		if ( ! validate() ) {
+			event.preventDefault();
+			event.stopPropagation();
+		}
+	}, true );
+
+	form.addEventListener( 'input', function( event ) {
+		var field = event.target;
+		if ( ! field.classList || ! field.classList.contains( 'wpcf7-form-control' ) ) {
+			return;
+		}
+
+		if ( field === emailField || field === phoneField ) {
+			if ( hasEmail() || hasPhone() ) {
+				clearField( emailField );
+				clearField( phoneField );
+			}
+			return;
+		}
+
+		if ( '' !== field.value.trim() ) {
+			clearField( field );
+		}
+	} );
+} )();
+</script>
 <script type="text/javascript" src="./js/frontend_509774.js" id="dtbaker-elementor-js-js"></script>
 <script type="text/javascript" id="twentyseventeen-skip-link-focus-fix-js-extra">
 /* <![CDATA[ */
