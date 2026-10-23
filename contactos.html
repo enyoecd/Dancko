@@ -251,7 +251,7 @@ var stylepress_email = {"ajax_url":"https:\/\/danckoproducciones.cl\/wp-admin\/a
 <p><label> Correo electr&oacute;nico<br>
     <span class="wpcf7-form-control-wrap your-email"><input type="email" name="your-email" value="" size="40" class="wpcf7-form-control wpcf7-text wpcf7-email wpcf7-validates-as-email" aria-invalid="false"></span> </label></p>
 <p><label> Tel&eacute;fono<br>
-    <span class="wpcf7-form-control-wrap tel-628"><input type="tel" name="tel-628" value="+56" size="40" class="wpcf7-form-control wpcf7-text wpcf7-tel wpcf7-validates-as-tel" aria-invalid="false"></span> </label></p>
+    <span class="wpcf7-form-control-wrap tel-628"><input type="tel" name="tel-628" value="+56" size="12" maxlength="12" class="wpcf7-form-control wpcf7-text wpcf7-tel wpcf7-validates-as-tel" aria-invalid="false"></span> </label></p>
 <p><label> Asunto<br>
     <span class="wpcf7-form-control-wrap your-subject"><input type="text" name="your-subject" value="" size="40" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" aria-required="true" aria-invalid="false"></span> </label></p>
 <p><label> Tu mensaje<br>
@@ -461,6 +461,8 @@ var wpcf7 = {"apiSettings":{"root":"https:\/\/danckoproducciones.cl\/wp-json\/co
 			var contactMessage = 'Ingresa tu correo electrónico o tu teléfono.';
 			invalid( emailField, contactMessage );
 			invalid( phoneField, contactMessage );
+		} else if ( hasPhone() && phoneField.value.length > 12 ) {
+			invalid( phoneField, 'El teléfono debe tener un máximo de 12 caracteres.' );
 		}
 
 		if ( '' === subjectField.value.trim() ) {
