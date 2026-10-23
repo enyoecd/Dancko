@@ -249,7 +249,7 @@ var stylepress_email = {"ajax_url":"https:\/\/danckoproducciones.cl\/wp-admin\/a
 <p><label> Tu nombre<br>
     <span class="wpcf7-form-control-wrap your-name"><input type="text" name="your-name" value="" size="40" class="wpcf7-form-control wpcf7-text wpcf7-validates-as-required" aria-required="true" aria-invalid="false"></span> </label></p>
 <p><label> Correo electr&oacute;nico<br>
-    <span class="wpcf7-form-control-wrap your-email"><input type="email" name="your-email" value="" size="40" class="wpcf7-form-control wpcf7-text wpcf7-email wpcf7-validates-as-email" aria-invalid="false"></span> </label></p>
+    <span class="wpcf7-form-control-wrap your-email"><input type="email" name="your-email" value="" size="40" class="wpcf7-form-control wpcf7-text wpcf7-email wpcf7-validates-as-required wpcf7-validates-as-email" aria-required="true" aria-invalid="false"></span> </label></p>
 <p><label> Tel&eacute;fono<br>
     <span class="wpcf7-form-control-wrap tel-628"><input type="tel" name="tel-628" value="+56" size="12" maxlength="12" inputmode="numeric" class="wpcf7-form-control wpcf7-text wpcf7-tel wpcf7-validates-as-tel" aria-invalid="false"></span> </label></p>
 <p><label> Asunto<br>
@@ -378,10 +378,6 @@ var wpcf7 = {"apiSettings":{"root":"https:\/\/danckoproducciones.cl\/wp-json\/co
 	var messageField = form.querySelector( '[name="your-message"]' );
 	var responseOutput = form.querySelector( '.wpcf7-response-output' );
 
-	var cleanPhone = function( value ) {
-		return value.replace( /[\s().-]/g, '' );
-	};
-
 	var sanitizePhone = function() {
 		var digits = phoneField.value.replace( /\D/g, '' );
 
@@ -394,11 +390,6 @@ var wpcf7 = {"apiSettings":{"root":"https:\/\/danckoproducciones.cl\/wp-json\/co
 
 	var hasEmail = function() {
 		return '' !== emailField.value.trim();
-	};
-
-	var hasPhone = function() {
-		var value = cleanPhone( phoneField.value.trim() );
-		return '' !== value && '+56' !== value && '56' !== value;
 	};
 
 	var clearField = function( field ) {
@@ -468,8 +459,8 @@ var wpcf7 = {"apiSettings":{"root":"https:\/\/danckoproducciones.cl\/wp-json\/co
 			invalid( nameField, 'El campo es obligatorio.' );
 		}
 
-		if ( ! hasEmail() && ! hasPhone() ) {
-			invalid( emailField, 'Ingresa tu correo electrónico o tu teléfono.' );
+		if ( ! hasEmail() ) {
+			invalid( emailField, 'El campo es obligatorio.' );
 		}
 
 		if ( '' === subjectField.value.trim() ) {
@@ -508,9 +499,6 @@ var wpcf7 = {"apiSettings":{"root":"https:\/\/danckoproducciones.cl\/wp-json\/co
 		if ( field === phoneField ) {
 			sanitizePhone();
 			clearField( phoneField );
-			if ( hasEmail() || hasPhone() ) {
-				clearField( emailField );
-			}
 			return;
 		}
 
